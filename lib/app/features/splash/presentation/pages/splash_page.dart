@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kipnews/app/config/routes/routes.dart';
+import 'package:kipnews/app/core/constants/constants.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -13,19 +16,45 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     Future.delayed(Duration(seconds: 2), () {
       if (!mounted) return;
-      // Navigate to the main app page after the splash screen
+      context.go(Routes.onBoarding);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SizedBox(
-          width: 150,
-          height: 150,
-          child: Image.asset('assets/images/kipnewslogo.png'),
-        ),
+      backgroundColor: AppColors.background,
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 300,
+                  height: 300,
+                  child: Image.asset('assets/images/kipnewslogo.png'),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                Text("From"),
+
+                SizedBox(
+                  width: 90,
+                  // height: 300,
+                  child: Image.asset('assets/images/linyulogo.png'),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
