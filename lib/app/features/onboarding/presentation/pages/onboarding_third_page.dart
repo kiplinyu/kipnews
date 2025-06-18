@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+// import 'package:go_router/go_router.dart';
+// import 'package:kipnews/app/config/routes/routes.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
-import 'package:kipnews/app/features/onboarding/presentation/widgets/button_widget.dart';
+// import 'package:kipnews/app/features/onboarding/presentation/widgets/button_widget.dart';
 
-class OnboardingFirst extends StatelessWidget {
-  const OnboardingFirst({super.key});
+class OnboardingThirdPage extends StatelessWidget {
+  const OnboardingThirdPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,10 @@ class OnboardingFirst extends StatelessWidget {
               spacing: 40,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(
-                    "Berita Bebas, Suara Kamu.",
-                    style: TextStyle(
+                    "Bergabung dan Suarakan Pendapatmu.",
+                    style: GoogleFonts.exo2(
                       color: AppColors.textDark,
                       fontWeight: FontWeight.w600,
                       fontSize: 40,
@@ -34,32 +36,18 @@ class OnboardingFirst extends StatelessWidget {
                 SizedBox(
                   width: 300,
                   height: 300,
-                  child: Image.asset('assets/images/onBoard-1.png'),
+                  child: Image.asset('assets/images/onBoard-3.png'),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
                   child: Text(
                     "Temukan berita terkini tanpa bias. Di KIPNews, kamu mendapatkan informasi yang jujur dan transparan.",
-                    style: TextStyle(
+                    style: GoogleFonts.exo2(
                       color: AppColors.textDark,
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
                     textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Row(
-                    spacing: 24,
-                    children: [
-                      ButtonWidget(text: 'Login', onPressed: () {}),
-                      ButtonWidget(
-                        text: 'Get Started',
-                        isOutlined: true,
-                        onPressed: () => context.push('/onboarding/second'),
-                      ),
-                    ],
                   ),
                 ),
               ],
