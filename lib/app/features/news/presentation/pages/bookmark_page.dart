@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
-import 'package:kipnews/app/features/news/presentation/pages/news_skeleton.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class BookmarkPage extends StatefulWidget {
@@ -134,13 +133,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       onPressed: () {
                         // Simulasikan penambahan bookmark
                         setState(() {
-                          // bookmarks = List.from(sampleBookmarks);
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NewsSkeleton(),
-                            ),
-                          );
+                          bookmarks = List.from(sampleBookmarks);
                         });
                       },
                       style: ElevatedButton.styleFrom(

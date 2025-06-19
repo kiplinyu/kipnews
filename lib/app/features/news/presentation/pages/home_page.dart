@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:kipnews/app/features/news/presentation/pages/profile_page.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -139,12 +140,23 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
+                  // Ganti bagian CircleAvatar dengan ini:
                   Flexible(
                     flex: 1,
-                    child: const CircleAvatar(
-                      radius: 24,
-                      backgroundImage: NetworkImage(
-                        'https://images.unsplash.com/photo-1657815555962-297100ce4b0e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfilePage(),
+                          ),
+                        );
+                      },
+                      child: const CircleAvatar(
+                        radius: 24,
+                        backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1657815555962-297100ce4b0e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                        ),
                       ),
                     ),
                   ),
