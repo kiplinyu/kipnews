@@ -145,8 +145,19 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // Handle registration
+                          // if (_formKey.currentState!.validate()) {
+                          //   // Handle registration
+                          // }
+                          if (_emailController.text.isEmpty ||
+                              _passwordController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please fill in all fields.'),
+                              ),
+                            );
+                          } else {
+                            // Navigate to home page
+                            context.go(Routes.home);
                           }
                         },
                         style: ElevatedButton.styleFrom(

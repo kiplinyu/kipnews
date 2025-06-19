@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kipnews/app/config/routes/routes.dart';
 import 'package:kipnews/app/features/auth/presentation/pages/login_page.dart';
 import 'package:kipnews/app/features/auth/presentation/pages/register_page.dart';
+import 'package:kipnews/app/features/news/presentation/pages/news_skeleton.dart';
 import 'package:kipnews/app/features/onboarding/presentation/onboarding_route.dart';
 import 'package:kipnews/app/features/splash/presentation/pages/splash_page.dart';
 
@@ -15,6 +16,7 @@ final GoRouter appRouter = GoRouter(
     ),
     ...authRoutes,
     ...onBoardingRoutes,
+    ...newsRoutes,
   ],
   // redirect: (context, state) =>
   //     _redirectLogic(context, state), // Tambahkan redirect
@@ -27,6 +29,11 @@ final List<GoRoute> authRoutes = [
     builder: (context, state) => const RegisterPage(),
   ),
   GoRoute(path: Routes.login, builder: (context, state) => const LoginPage()),
+];
+
+final List<GoRoute> newsRoutes = [
+  GoRoute(path: Routes.home, builder: (context, state) => const NewsSkeleton()),
+  // GoRoute(path: Routes.login, builder: (context, state) => const HomePage()),
 ];
 
 final List<GoRoute> onBoardingRoutes = [onBoardingRoute];

@@ -25,7 +25,7 @@ class OnboardingFirstPage extends StatelessWidget {
                   style: GoogleFonts.exo2(
                     color: AppColors.textDark,
                     fontWeight: FontWeight.w600,
-                    fontSize: 40,
+                    fontSize: 32,
                   ),
                   textAlign: TextAlign.center,
                 ),

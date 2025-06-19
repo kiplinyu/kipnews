@@ -18,7 +18,6 @@ class OnboardingThirdPage extends StatelessWidget {
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 40,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -27,12 +26,12 @@ class OnboardingThirdPage extends StatelessWidget {
                     style: GoogleFonts.exo2(
                       color: AppColors.textDark,
                       fontWeight: FontWeight.w600,
-                      fontSize: 40,
+                      fontSize: 32,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-
+                SizedBox(height: 24),
                 SizedBox(
                   width: 300,
                   height: 300,
