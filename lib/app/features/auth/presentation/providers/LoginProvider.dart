@@ -26,23 +26,24 @@ class LoginProvider with ChangeNotifier {
   String? error;
   UserEntity? user;
 
-  Future<void> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     isLoading = true;
     notifyListeners();
-
-    try {
-      final response = await _usecase.execute(email, password);
-
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('auth_token', response.token);
-      // Lanjutkan ke halaman berikutnya
-    } catch (e) {
-      error = "Login Gagal! Email atau Password Salah.";
-      // tampilkan ke UI misalnya dengan snackbar
-    } finally {
-      isLoading = false;
+    final UserEntity response = await _usecase.execute(email, password);
+    if(response.token.isEmpty) {
       notifyListeners();
+      return false;
     }
+    isLoading = false;
+    notifyListeners();
+
+    if(user != null && user!.token.isNotEmpty) {
+      if(user!.token.isNotEmpty) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', user!.token);
+      }
+    }
+    return true;
   }
 
 }

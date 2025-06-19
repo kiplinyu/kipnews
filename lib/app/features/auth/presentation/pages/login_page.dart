@@ -164,10 +164,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             return;
                           }
                           final provider = ref.read(loginProvider); // panggil provider login
-                          await provider.login(email, password);
-                          if (provider.error != null) {
+                          final result = await provider.login(email, password);
+                          if (!result) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(provider.error!)),
+                              SnackBar(content: Text("Password atau Email Salah!")),
                             );
                             return;
                           }
