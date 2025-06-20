@@ -28,8 +28,17 @@ class NewsModel {
   NewsEntity toEntity() => NewsEntity(
     id: id,
     title: title,
+    slug: slug,
     summary: summary,
-    imageUrl: featuredImageUrl,
+    content: content,
+    featuredImageUrl: featuredImageUrl,
+    category: category,
+    tags: tags,
+    authorId: authorName, // Assuming authorName is used as authorId
+    isPublished: true, // Assuming all news are published
+    publishedAt: publishedAt,
+    viewCount: 0, // Default value for viewCount
+    imageUrl: featuredImageUrl, // Assuming featuredImageUrl is used as imageUrl
   );
 
   factory NewsModel.fromJson(Map<String, dynamic> json) {

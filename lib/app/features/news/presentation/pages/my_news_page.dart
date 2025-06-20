@@ -1,15 +1,344 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:kipnews/app/features/news/presentation/pages/create_news.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class MyNewsPage extends StatelessWidget {
+class MyNewsPage extends StatefulWidget {
   const MyNewsPage({super.key});
+
+  @override
+  State<MyNewsPage> createState() => _MyNewsPageState();
+}
+
+class _MyNewsPageState extends State<MyNewsPage> {
+  List<Map<String, dynamic>> myNews = []; // Daftar berita yang dibuat user
+
+  // Data contoh untuk simulasi
+  final List<Map<String, dynamic>> sampleNews = [
+    {
+      'id': '1',
+      'title': 'Startup Lokal Rilis Chatbot Kripto Pintar',
+      'description': 'Pintar yang Bisa Baca Sentimen Twitter',
+      'date': '24 Jan 2025',
+      'category': 'Tech',
+    },
+    {
+      'id': '2',
+      'title': 'Emas Melejit 7% Sepanjang April',
+      'description': 'Analis Prediksi Masih Naik',
+      'date': '1 Apr 2025',
+      'category': 'Finance',
+    },
+    {
+      'id': '3',
+      'title': 'Film Indie "Malam di Puncak"',
+      'description': 'Tayang Perdana di Festival Film Jakarta',
+      'date': '15 Mei 2025',
+      'category': 'Entertainment',
+    },
+  ];
+
+  void _addNews() async {
+    // Navigasi ke halaman buat berita baru
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CreateNews()),
+    );
+
+    // Jika ada data yang dikembalikan, tambahkan ke daftar
+    if (result != null && result is Map<String, dynamic>) {
+      setState(() {
+        myNews.insert(0, {
+          ...result,
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'date': 'Today',
+        });
+      });
+    }
+  }
+
+  void _editNews(int index) async {
+    // Navigasi ke halaman edit dengan membawa data berita
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreateNews(news: myNews[index])),
+    );
+
+    // Jika ada data yang dikembalikan, update berita
+    if (result != null && result is Map<String, dynamic>) {
+      setState(() {
+        myNews[index] = result;
+      });
+    }
+  }
+
+  void _deleteNews(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete News', style: GoogleFonts.exo2()),
+        content: Text(
+          'Are you sure you want to delete this news?',
+          style: GoogleFonts.exo2(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel', style: GoogleFonts.exo2()),
+          ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                myNews.removeAt(index);
+              });
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('News deleted', style: GoogleFonts.exo2()),
+                ),
+              );
+            },
+            child: Text('Delete', style: GoogleFonts.exo2(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          'My News Page',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addNews,
+        backgroundColor: AppColors.primary,
+        child: Icon(PhosphorIcons.plus(), color: Colors.white),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                SizedBox(
+                  width: 24,
+                  child: Image.asset('assets/images/kipnewslogo-only.png'),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'My News',
+                  style: GoogleFonts.exo2(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textDark,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.only(left: 37.0),
+              child: Text(
+                'Hi, Dzul! Shape the Conversation',
+                style: GoogleFonts.exo2(
+                  color: AppColors.placeholder,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Search Bar
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Search My News',
+                hintStyle: GoogleFonts.exo2(color: AppColors.placeholder),
+                prefixIcon: Icon(
+                  PhosphorIcons.magnifyingGlass(),
+                  color: AppColors.placeholder,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24.0),
+                  borderSide: BorderSide(color: AppColors.primary),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24.0),
+                  borderSide: BorderSide(color: AppColors.primary),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Kondisi: Tidak ada berita
+            if (myNews.isEmpty)
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Placeholder untuk gambar
+                      Container(
+                        width: 300,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Icon(
+                          PhosphorIcons.newspaper(),
+                          size: 100,
+                          color: AppColors.placeholder,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'You Haven\'t Written Anything Yet',
+                        style: GoogleFonts.exo2(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textDark,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Share your perspective',
+                        style: GoogleFonts.exo2(
+                          fontSize: 16,
+                          color: AppColors.placeholder,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        // onPressed: _addNews,
+                        onPressed: () {
+                          setState(() {
+                            myNews = List.from(sampleNews);
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: AppColors.primary,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                              color: AppColors.primary,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Create News',
+                          style: GoogleFonts.exo2(
+                            color: AppColors.textDark,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            // Kondisi: Ada berita
+            if (myNews.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: myNews.length,
+                  itemBuilder: (context, index) {
+                    final news = myNews[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  news['date'],
+                                  style: GoogleFonts.exo2(
+                                    fontSize: 14,
+                                    color: AppColors.placeholder,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(PhosphorIcons.pencil()),
+                                      onPressed: () => _editNews(index),
+                                      color: AppColors.primary,
+                                    ),
+                                    IconButton(
+                                      icon: Icon(PhosphorIcons.trash()),
+                                      onPressed: () => _deleteNews(index),
+                                      color: Colors.red,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              news['title'],
+                              style: GoogleFonts.exo2(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textDark,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              news['description'],
+                              style: GoogleFonts.exo2(
+                                fontSize: 14,
+                                color: AppColors.textDark,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    news['category'],
+                                    style: GoogleFonts.exo2(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+          ],
         ),
       ),
     );

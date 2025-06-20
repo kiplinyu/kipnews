@@ -35,6 +35,7 @@ Dio _makeDio(String baseUrl) {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token');
 
+      print("🔍 Cek token: $token");
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token'; // ✅ Tambahkan header
         print('🧾 Kirim token: $token');

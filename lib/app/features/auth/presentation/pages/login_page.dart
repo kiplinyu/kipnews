@@ -7,6 +7,7 @@ import 'package:kipnews/app/config/routes/routes.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
 import 'package:kipnews/app/features/auth/presentation/providers/LoginProvider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends ConsumerStatefulWidget  {
   const LoginPage({super.key});
@@ -21,7 +22,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
+    Future.microtask(() async{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      if (token != null) {
+        context.go(Routes.home);
+      }
+    });
+
+  }
   @override
   void dispose() {
     _emailController.dispose();

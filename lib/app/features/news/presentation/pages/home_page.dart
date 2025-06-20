@@ -1,106 +1,105 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:kipnews/app/features/news/business/entities/news_entity.dart';
+import 'package:kipnews/app/features/news/presentation/pages/profile_page.dart';
+import 'package:kipnews/app/features/news/presentation/providers/news_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePage extends StatefulWidget {
+import '../../../../config/routes/routes.dart';
+
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final List<Map<String, dynamic>> carouselItems = [
-    {
-      'title': 'DualSense VR Pro: Sensasi Game Immersive Tappa Batas!',
-      'author': 'Kurokawa Akane',
-      'date': '13 Mar 2025',
-      'category': 'Gaming',
-      'color': AppColors.primary,
-    },
-    {
-      'title': 'Film Indie "Malam di Puncak" Tayang Perdana',
-      'author': 'Emilia',
-      'date': '15 Apr 2025',
-      'category': 'Entertainment',
-      'color': Colors.blueAccent,
-    },
-    {
-      'title': 'DualSense VR Pro: Sensasi Game Immersive Tappa Batas!',
-      'author': 'Kurokawa Akane',
-      'date': '13 Mar 2025',
-      'category': 'Gaming',
-      'color': AppColors.primary,
-    },
-    {
-      'title': 'Film Indie "Malam di Puncak" Tayang Perdana',
-      'author': 'Emilia',
-      'date': '15 Apr 2025',
-      'category': 'Entertainment',
-      'color': Colors.blueAccent,
-    },
-    {
-      'title': 'DualSense VR Pro: Sensasi Game Immersive Tappa Batas!',
-      'author': 'Kurokawa Akane',
-      'date': '13 Mar 2025',
-      'category': 'Gaming',
-      'color': AppColors.primary,
-    },
-    {
-      'title': 'Film Indie "Malam di Puncak" Tayang Perdana',
-      'author': 'Emilia',
-      'date': '15 Apr 2025',
-      'category': 'Entertainment',
-      'color': Colors.blueAccent,
-    },
-    // Tambahkan lebih banyak item jika diperlukan
+class _HomePageState extends ConsumerState<HomePage> {
+  final List<NewsEntity> carouselItems = [
+    NewsEntity(
+      id: '1',
+      title: 'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
+      authorId: 'Alisa Mikhailovna Kujou',
+      publishedAt: DateTime.parse('2025-01-24T10:00:00Z'),
+      category: 'Tech',
+      slug: 'startup-lokal-chatbot-kripto',
+      summary: 'Chatbot ini menggunakan AI untuk menganalisis sentimen di Twitter terkait kripto.',
+      content: 'Chatbot ini menggunakan AI untuk menganalisis sentimen di Twitter terkait kripto. Dengan teknologi ini, pengguna dapat mendapatkan informasi terkini dan analisis pasar kripto secara real-time.',
+      featuredImageUrl: 'https://example.com/image1.jpg',
+      tags: ['AI', 'Crypto', 'Chatbot'],
+      isPublished: true,
+      viewCount: 1500,
+      imageUrl: 'https://example.com/image1.jpg',
+    ),
   ];
 
-  final List<Map<String, dynamic>> newsItems = [
-    {
-      'title':
-          'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
-      'author': 'Alisa Mikhailovna Kujou',
-      'date': '24 Jan 2025',
-      'category': 'Tech',
-    },
-    {
-      'title': 'Emas Melejit 7% Sepanjang April, Analis Prediksi Masih Naik',
-      'author': 'Shouko Komi',
-      'date': '1 Apr 2025',
-      'category': 'Finance',
-    },
-    {
-      'title': 'Film Indie ‘Malam di Puncak’',
-      'author': 'Emilia',
-      'date': '1 Apr 2025',
-      'category': 'Entertainment',
-    },
-    {
-      'title':
-          'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
-      'author': 'Alisa Mikhailovna Kujou',
-      'date': '24 Jan 2025',
-      'category': 'Tech',
-    },
-    {
-      'title': 'Emas Melejit 7% Sepanjang April, Analis Prediksi Masih Naik',
-      'author': 'Shouko Komi',
-      'date': '1 Apr 2025',
-      'category': 'Finance',
-    },
-    {
-      'title': 'Film Indie ‘Malam di Puncak’',
-      'author': 'Emilia',
-      'date': '1 Apr 2025',
-      'category': 'Entertainment',
-    },
-  ];
+
+  // final List<Map<String, dynamic>> newsItems = [
+  //   {
+  //     'title':
+  //         'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
+  //     'author': 'Alisa Mikhailovna Kujou',
+  //     'date': '24 Jan 2025',
+  //     'category': 'Tech',
+  //   },
+  //   {
+  //     'title': 'Emas Melejit 7% Sepanjang April, Analis Prediksi Masih Naik',
+  //     'author': 'Shouko Komi',
+  //     'date': '1 Apr 2025',
+  //     'category': 'Finance',
+  //   },
+  //   {
+  //     'title': 'Film Indie ‘Malam di Puncak’',
+  //     'author': 'Emilia',
+  //     'date': '1 Apr 2025',
+  //     'category': 'Entertainment',
+  //   },
+  //   {
+  //     'title':
+  //         'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
+  //     'author': 'Alisa Mikhailovna Kujou',
+  //     'date': '24 Jan 2025',
+  //     'category': 'Tech',
+  //   },
+  //   {
+  //     'title': 'Emas Melejit 7% Sepanjang April, Analis Prediksi Masih Naik',
+  //     'author': 'Shouko Komi',
+  //     'date': '1 Apr 2025',
+  //     'category': 'Finance',
+  //   },
+  //   {
+  //     'title': 'Film Indie ‘Malam di Puncak’',
+  //     'author': 'Emilia',
+  //     'date': '1 Apr 2025',
+  //     'category': 'Entertainment',
+  //   },
+  // ];
+
+  @override
+  void initState(){
+    super.initState();
+    // Safe call to load news after widget is initialized
+
+    Future.microtask(() async{
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('auth_token');
+        if (token == null) {
+          context.go(Routes.login);
+          return;
+        }
+      await ref.read(newsProvider).loadNews();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final NewsProvider provider = ref.watch(newsProvider);
+    final List<NewsEntity> newsItems = provider.news;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -139,12 +138,23 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
+                  // Ganti bagian CircleAvatar dengan ini:
                   Flexible(
                     flex: 1,
-                    child: const CircleAvatar(
-                      radius: 24,
-                      backgroundImage: NetworkImage(
-                        'https://images.unsplash.com/photo-1657815555962-297100ce4b0e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfilePage(),
+                          ),
+                        );
+                      },
+                      child: const CircleAvatar(
+                        radius: 24,
+                        backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1657815555962-297100ce4b0e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                        ),
                       ),
                     ),
                   ),
@@ -205,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
-                          color: item['color'],
+                          //TODO: color to IMAGE
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
@@ -221,7 +231,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              item['category'],
+                              item.category,
                               style: GoogleFonts.exo2(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -229,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              item['title'],
+                              item.category,
                               style: GoogleFonts.exo2(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -242,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               children: [
                                 Text(
-                                  item['author'],
+                                  item.authorId,
                                   style: GoogleFonts.exo2(
                                     fontSize: 12,
                                     color: Colors.white,
@@ -250,7 +260,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  item['date'],
+                                  item.publishedAt.toLocal().toString().split('T')[0],
                                   style: GoogleFonts.exo2(
                                     fontSize: 12,
                                     color: Colors.white,
@@ -289,10 +299,20 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.grey[300],
                         ),
                         // Placeholder untuk gambar berita
-                        child: Icon(PhosphorIcons.image(), color: Colors.grey),
+                        child: Image.network(
+                          news.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              PhosphorIcons.image(),
+                              size: 40,
+                              color: Colors.grey,
+                            );
+                          },
+                        ),
                       ),
                       title: Text(
-                        news['title'],
+                        news.title,
                         style: GoogleFonts.exo2(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Column(
@@ -300,13 +320,13 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           const SizedBox(height: 4),
                           Text(
-                            news['author'],
+                            news.authorId,
                             style: GoogleFonts.exo2(fontSize: 12),
                           ),
                           Row(
                             children: [
                               Text(
-                                news['date'],
+                                news.publishedAt.toLocal().toString().split('T')[0],
                                 style: GoogleFonts.exo2(
                                   fontSize: 12,
                                   color: Colors.grey,
@@ -314,7 +334,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                news['category'],
+                                news.category,
                                 style: GoogleFonts.exo2(
                                   fontSize: 12,
                                   color: AppColors.primary,
@@ -347,17 +367,17 @@ class _HomePageState extends State<HomePage> {
 
 // Halaman detail (placeholder)
 class DetailPage extends StatelessWidget {
-  final Map<String, dynamic> newsItem;
+  final NewsEntity newsItem;
 
   const DetailPage({super.key, required this.newsItem});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(newsItem['title'])),
+      appBar: AppBar(title: Text(newsItem.title)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(newsItem['author']),
+        child: Text(newsItem.authorId),
       ),
     );
   }

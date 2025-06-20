@@ -34,14 +34,13 @@ class LoginProvider with ChangeNotifier {
       notifyListeners();
       return false;
     }
+    user = response;
     isLoading = false;
     notifyListeners();
 
-    if(user != null && user!.token.isNotEmpty) {
-      if(user!.token.isNotEmpty) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', user!.token);
-      }
+    if(user!.token.isNotEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', user!.token);
     }
     return true;
   }

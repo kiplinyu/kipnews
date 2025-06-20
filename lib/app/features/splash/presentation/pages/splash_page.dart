@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kipnews/app/config/routes/routes.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -12,13 +13,20 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 2), () async{
       if (!mounted) return;
-      context.go(Routes.onBoarding);
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      if (token != null) {
+        context.go(Routes.home);
+      } else {
+        context.go(Routes.onBoarding);
+      }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
