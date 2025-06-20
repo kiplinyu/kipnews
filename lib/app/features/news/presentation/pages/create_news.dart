@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:kipnews/app/features/news/business/entities/news_entity.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CreateNews extends StatefulWidget {
-  final Map<String, dynamic>? news;
+  final NewsEntity? news;
 
   const CreateNews({super.key, this.news});
 
@@ -31,14 +32,14 @@ class _CreateNewsState extends State<CreateNews> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.news?['title'] ?? '');
+    _titleController = TextEditingController(text: widget.news?.title ?? '');
     _summaryController = TextEditingController(
-      text: widget.news?['summary'] ?? '',
+      text: widget.news?.summary ?? '',
     );
     _contentController = TextEditingController(
-      text: widget.news?['content'] ?? '',
+      text: widget.news?.content ?? '',
     );
-    _selectedCategory = widget.news?['category'];
+    _selectedCategory = widget.news?.content;
   }
 
   @override
