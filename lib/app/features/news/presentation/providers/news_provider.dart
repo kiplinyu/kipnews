@@ -33,8 +33,43 @@ class NewsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<List<NewsEntity>> loadMyNews() async {
+    _isLoading = true;
+    notifyListeners();
+    final result = await getNews.getMyNews();
+    _isLoading = false;
+    notifyListeners();
+    return result;
+  }
+
   Future<bool> logout() async {
     final result = await getNews.repository.logout();
+    return result;
+  }
+
+  Future<bool> delete(String id) async {
+    final result = await getNews.repository.delete(id);
+    return result;
+  }
+
+  Future<bool> upload({
+    String? id,
+    required String title,
+    required String summary,
+    required String content,
+    required String category,
+    required String imageUrl,
+    required bool isEdit
+  }) async {
+    final result = await getNews.upload(
+      id: id,
+      title: title,
+      summary: summary,
+      content: content,
+      category: category,
+      imageUrl: imageUrl,
+      isEdit: isEdit,
+    );
     return result;
   }
 }

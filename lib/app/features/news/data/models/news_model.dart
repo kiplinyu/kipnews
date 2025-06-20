@@ -6,11 +6,11 @@ class NewsModel {
   final String slug;
   final String summary;
   final String content;
-  final String featuredImageUrl;
+  final String? featuredImageUrl;
   final String category;
-  final List<String> tags;
-  final String authorName;
-  final DateTime publishedAt;
+  final List<String>? tags;
+  final String? authorName;
+  final DateTime? publishedAt;
 
   NewsModel({
     required this.id,
@@ -18,11 +18,11 @@ class NewsModel {
     required this.slug,
     required this.summary,
     required this.content,
-    required this.featuredImageUrl,
+    this.featuredImageUrl,
     required this.category,
-    required this.tags,
-    required this.authorName,
-    required this.publishedAt,
+    this.tags,
+    this.authorName,
+    this.publishedAt,
   });
 
   NewsEntity toEntity() => NewsEntity(

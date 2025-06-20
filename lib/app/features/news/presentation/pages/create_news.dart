@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:kipnews/app/features/news/business/entities/news_entity.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class CreateNews extends StatefulWidget {
-  final Map<String, dynamic>? news;
+import '../providers/news_provider.dart';
+
+class CreateNews extends ConsumerStatefulWidget {
+  final NewsEntity? news;
 
   const CreateNews({super.key, this.news});
 
   @override
-  State<CreateNews> createState() => _CreateNewsState();
+  ConsumerState<CreateNews> createState() => _CreateNewsState();
 }
 
-class _CreateNewsState extends State<CreateNews> {
+class _CreateNewsState extends ConsumerState<CreateNews> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _summaryController;
   late TextEditingController _contentController;
+  late TextEditingController _imageUrlController;
   String? _selectedCategory;
 
   final List<String> categories = [
@@ -31,14 +36,15 @@ class _CreateNewsState extends State<CreateNews> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.news?['title'] ?? '');
+    _titleController = TextEditingController(text: widget.news?.title ?? '');
+    _imageUrlController = TextEditingController(text: widget.news?.imageUrl ?? '');
     _summaryController = TextEditingController(
-      text: widget.news?['summary'] ?? '',
+      text: widget.news?.summary ?? '',
     );
     _contentController = TextEditingController(
-      text: widget.news?['content'] ?? '',
+      text: widget.news?.content ?? '',
     );
-    _selectedCategory = widget.news?['category'];
+    _selectedCategory = widget.news?.category ?? 'null';
   }
 
   @override
@@ -46,16 +52,30 @@ class _CreateNewsState extends State<CreateNews> {
     _titleController.dispose();
     _summaryController.dispose();
     _contentController.dispose();
+    _imageUrlController.dispose();
     super.dispose();
   }
 
-  void _submit() {
+  void _submit(bool isEdit) {
     if (_formKey.currentState!.validate()) {
       Navigator.pop(context, {
         'title': _titleController.text,
         'summary': _summaryController.text,
         'content': _contentController.text,
         'category': _selectedCategory!,
+        'featuredImageUrl': _imageUrlController,
+      });
+      Future.microtask(() async{
+        final provider = ref.read(newsProvider);
+        await provider.upload(
+            id: widget.news?.id,
+            title: _titleController.text,
+            summary: _summaryController.text,
+            content: _contentController.text,
+            category: _selectedCategory!,
+            imageUrl: _imageUrlController.text,
+            isEdit: isEdit,
+        );
       });
     }
   }
@@ -152,9 +172,29 @@ class _CreateNewsState extends State<CreateNews> {
               ),
               const SizedBox(height: 20),
 
+              TextFormField(
+                controller: _imageUrlController,
+                decoration: InputDecoration(
+                  labelText: 'Image Url',
+                  labelStyle: GoogleFonts.exo2(color: AppColors.placeholder),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.primary),
+                  ),
+                ),
+                style: GoogleFonts.exo2(),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a imageUrl';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+
               // Category Field
               DropdownButtonFormField<String>(
-                value: _selectedCategory,
+                value: null,
                 decoration: InputDecoration(
                   labelText: 'Category',
                   labelStyle: GoogleFonts.exo2(color: AppColors.placeholder),
@@ -229,7 +269,7 @@ class _CreateNewsState extends State<CreateNews> {
 
               // Publish Button
               ElevatedButton(
-                onPressed: _submit,
+                onPressed: () => _submit(widget.news != null),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   padding: const EdgeInsets.symmetric(vertical: 16),

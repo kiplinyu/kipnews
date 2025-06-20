@@ -4,14 +4,14 @@ class NewsEntity {
   final String slug;
   final String summary;
   final String content;
-  final String featuredImageUrl;
-  final String authorId;
+  final String? featuredImageUrl;
+  final String? authorId;
   final String category;
-  final List<String> tags;
+  final List<String>? tags;
   final bool isPublished;
-  final DateTime publishedAt;
-  final int viewCount;
-  final String imageUrl;
+  final DateTime? publishedAt;
+  final int? viewCount;
+  final String? imageUrl;
 
 
   NewsEntity({
@@ -20,13 +20,13 @@ class NewsEntity {
     required this.slug,
     required this.summary,
     required this.content,
-    required this.featuredImageUrl,
-    required this.authorId,
+    this.featuredImageUrl,
+    this.authorId,
     required this.category,
-    required this.tags,
-    required this.isPublished,
-    required this.publishedAt,
-    required this.viewCount,
-    required this.imageUrl,
+     this.tags,
+     required this.isPublished,
+     this.publishedAt,
+     this.viewCount,
+     this.imageUrl,
   });
 }

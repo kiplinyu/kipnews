@@ -13,7 +13,7 @@ class DetailPage extends StatelessWidget {
       appBar: AppBar(title: Text(newsItem.title)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(newsItem.authorId),
+        child: Text(newsItem.authorId ?? 'No Author'),
       ),
     );
   }

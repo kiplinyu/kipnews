@@ -252,7 +252,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             Row(
                               children: [
                                 Text(
-                                  item.authorId,
+                                  item.authorId ?? "Unknown Author",
                                   style: GoogleFonts.exo2(
                                     fontSize: 12,
                                     color: Colors.white,
@@ -260,7 +260,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  item.publishedAt.toLocal().toString().split('T')[0],
+                                  item.publishedAt?.toLocal().toString().split('T')[0] ?? "Unknown Date",
                                   style: GoogleFonts.exo2(
                                     fontSize: 12,
                                     color: Colors.white,
@@ -300,7 +300,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                         // Placeholder untuk gambar berita
                         child: Image.network(
-                          news.imageUrl,
+                          news.imageUrl ?? 'https://via.placeholder.com/80',
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
@@ -320,13 +320,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                         children: [
                           const SizedBox(height: 4),
                           Text(
-                            news.authorId,
+                            news.authorId ?? "Unknown Author",
                             style: GoogleFonts.exo2(fontSize: 12),
                           ),
                           Row(
                             children: [
                               Text(
-                                news.publishedAt.toLocal().toString().split('T')[0],
+                                news.publishedAt?.toLocal().toString().split('T')[0] ?? "Unknown Date",
                                 style: GoogleFonts.exo2(
                                   fontSize: 12,
                                   color: Colors.grey,
@@ -377,7 +377,7 @@ class DetailPage extends StatelessWidget {
       appBar: AppBar(title: Text(newsItem.title)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(newsItem.authorId),
+        child: Text(newsItem.authorId ?? 'No Author'),
       ),
     );
   }

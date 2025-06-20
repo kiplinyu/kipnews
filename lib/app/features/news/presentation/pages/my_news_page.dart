@@ -1,62 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:kipnews/app/features/news/business/entities/news_entity.dart';
 import 'package:kipnews/app/features/news/presentation/pages/create_news.dart';
+import 'package:kipnews/app/features/news/presentation/providers/news_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class MyNewsPage extends StatefulWidget {
+class MyNewsPage extends ConsumerStatefulWidget {
   const MyNewsPage({super.key});
 
   @override
-  State<MyNewsPage> createState() => _MyNewsPageState();
+  ConsumerState<MyNewsPage> createState() => _MyNewsPageState();
 }
 
-class _MyNewsPageState extends State<MyNewsPage> {
-  List<Map<String, dynamic>> myNews = []; // Daftar berita yang dibuat user
+class _MyNewsPageState extends ConsumerState<MyNewsPage> {
+  List<NewsEntity> myNews = []; // Daftar berita yang dibuat user
 
   // Data contoh untuk simulasi
-  final List<Map<String, dynamic>> sampleNews = [
-    {
-      'id': '1',
-      'title': 'Startup Lokal Rilis Chatbot Kripto Pintar',
-      'description': 'Pintar yang Bisa Baca Sentimen Twitter',
-      'date': '24 Jan 2025',
-      'category': 'Tech',
-    },
-    {
-      'id': '2',
-      'title': 'Emas Melejit 7% Sepanjang April',
-      'description': 'Analis Prediksi Masih Naik',
-      'date': '1 Apr 2025',
-      'category': 'Finance',
-    },
-    {
-      'id': '3',
-      'title': 'Film Indie "Malam di Puncak"',
-      'description': 'Tayang Perdana di Festival Film Jakarta',
-      'date': '15 Mei 2025',
-      'category': 'Entertainment',
-    },
-  ];
+
+  @override
+  void initState(){
+    super.initState();
+    // Inisialisasi dengan data contoh
+    Future.microtask(() async {
+      final provider = ref.read(newsProvider);
+      myNews = await provider.loadMyNews();
+      setState(() {});
+    });
+  }
+
 
   void _addNews() async {
     // Navigasi ke halaman buat berita baru
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const CreateNews()),
+      MaterialPageRoute(builder: (context) => CreateNews()),
     );
 
     // Jika ada data yang dikembalikan, tambahkan ke daftar
-    if (result != null && result is Map<String, dynamic>) {
-      setState(() {
-        myNews.insert(0, {
-          ...result,
-          'id': DateTime.now().millisecondsSinceEpoch.toString(),
-          'date': 'Today',
-        });
+    if (result != null && result is NewsEntity) {
+      final provider = ref.read(newsProvider);
+
+      setState(() async{
+        myNews = await provider.loadMyNews();
       });
     }
   }
+
 
   void _editNews(int index) async {
     // Navigasi ke halaman edit dengan membawa data berita
@@ -66,7 +57,7 @@ class _MyNewsPageState extends State<MyNewsPage> {
     );
 
     // Jika ada data yang dikembalikan, update berita
-    if (result != null && result is Map<String, dynamic>) {
+    if (result != null && result is NewsEntity) {
       setState(() {
         myNews[index] = result;
       });
@@ -90,7 +81,7 @@ class _MyNewsPageState extends State<MyNewsPage> {
           TextButton(
             onPressed: () {
               setState(() {
-                myNews.removeAt(index);
+                ref.read(newsProvider).delete(myNews[index].id);
               });
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
@@ -218,7 +209,7 @@ class _MyNewsPageState extends State<MyNewsPage> {
                         // onPressed: _addNews,
                         onPressed: () {
                           setState(() {
-                            myNews = List.from(sampleNews);
+                            myNews = List.from(myNews);
                           });
                         },
                         style: ElevatedButton.styleFrom(
@@ -271,7 +262,7 @@ class _MyNewsPageState extends State<MyNewsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  news['date'],
+                                  news.publishedAt.toString(),
                                   style: GoogleFonts.exo2(
                                     fontSize: 14,
                                     color: AppColors.placeholder,
@@ -295,7 +286,7 @@ class _MyNewsPageState extends State<MyNewsPage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              news['title'],
+                              news.title,
                               style: GoogleFonts.exo2(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -304,7 +295,7 @@ class _MyNewsPageState extends State<MyNewsPage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              news['description'],
+                              news.summary,
                               style: GoogleFonts.exo2(
                                 fontSize: 14,
                                 color: AppColors.textDark,
@@ -322,7 +313,7 @@ class _MyNewsPageState extends State<MyNewsPage> {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    news['category'],
+                                    news.category,
                                     style: GoogleFonts.exo2(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.bold,
