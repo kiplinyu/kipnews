@@ -10,4 +10,8 @@ class GetNews {
   Future<List<NewsEntity>> call() async {
     return await repository.getNews();
   }
+
+  Future<List<NewsEntity>> getMyNews() async {
+    return await repository.getMyNews();
+  }
 }
