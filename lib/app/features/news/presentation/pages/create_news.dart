@@ -58,24 +58,31 @@ class _CreateNewsState extends ConsumerState<CreateNews> {
 
   void _submit(bool isEdit) {
     if (_formKey.currentState!.validate()) {
-      Navigator.pop(context, {
-        'title': _titleController.text,
-        'summary': _summaryController.text,
-        'content': _contentController.text,
-        'category': _selectedCategory!,
-        'featuredImageUrl': _imageUrlController,
-      });
       Future.microtask(() async{
         final provider = ref.read(newsProvider);
-        await provider.upload(
-            id: widget.news?.id,
-            title: _titleController.text,
-            summary: _summaryController.text,
-            content: _contentController.text,
-            category: _selectedCategory!,
-            imageUrl: _imageUrlController.text,
-            isEdit: isEdit,
+        final result = await provider.upload(
+          id: widget.news?.id,
+          title: _titleController.text,
+          summary: _summaryController.text,
+          content: _contentController.text,
+          category: _selectedCategory!,
+          imageUrl: _imageUrlController.text,
+          isEdit: isEdit,
         );
+
+        //check result is done
+        if (result) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(isEdit ? 'News updated successfully' : 'News created successfully')),
+          );
+          Navigator.pop(context, true);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to save news')),
+          );
+        }
+
+
       });
     }
   }
