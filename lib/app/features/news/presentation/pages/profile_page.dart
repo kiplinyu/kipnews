@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class ProfilePage extends StatelessWidget {
+import '../../../../config/routes/routes.dart';
+import '../providers/news_provider.dart';
+
+class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -95,7 +100,15 @@ class ProfilePage extends StatelessWidget {
               Center(
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // TODO: Implement logout functionality
+                    // Handle logout logic here
+                    final provider = ref.read(newsProvider);
+                    provider.logout();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Logged out successfully!'),
+                      ),
+                    );
+                    context.go(Routes.login);
                   },
                   icon: Icon(PhosphorIcons.signOut()),
                   label: Text(

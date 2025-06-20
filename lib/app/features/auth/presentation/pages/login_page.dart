@@ -1,24 +1,41 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/config/routes/routes.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:kipnews/app/features/auth/presentation/providers/LoginProvider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget  {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   bool _obscurePassword = true;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Future.microtask(() async{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      if (token != null) {
+        context.go(Routes.home);
+      }
+    });
+
+  }
   @override
   void dispose() {
     _emailController.dispose();
@@ -144,21 +161,31 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // if (_formKey.currentState!.validate()) {
                           //   // Handle registration
                           // }
-                          if (_emailController.text.isEmpty ||
-                              _passwordController.text.isEmpty) {
+
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text.trim();
+                          if (email.isEmpty ||
+                              password.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Please fill in all fields.'),
                               ),
                             );
-                          } else {
-                            // Navigate to home page
-                            context.go(Routes.home);
+                            return;
                           }
+                          final provider = ref.read(loginProvider); // panggil provider login
+                          final result = await provider.login(email, password);
+                          if (!result) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Password atau Email Salah!")),
+                            );
+                            return;
+                          }
+                          context.go(Routes.home);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
