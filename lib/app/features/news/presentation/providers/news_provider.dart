@@ -33,6 +33,15 @@ class NewsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<List<NewsEntity>> loadMyNews() async {
+    _isLoading = true;
+    notifyListeners();
+    final result = await getNews.getMyNews();
+    _isLoading = false;
+    notifyListeners();
+    return result;
+  }
+
   Future<bool> logout() async {
     final result = await getNews.repository.logout();
     return result;
