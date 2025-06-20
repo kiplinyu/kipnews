@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kipnews/app/features/news/business/repositories/news_repository.dart';
 import 'package:kipnews/app/features/news/data/datasources/news_remote_data_source.dart';
 import 'package:kipnews/app/features/news/data/repositories/news_repository_impl.dart';
 
