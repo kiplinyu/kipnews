@@ -50,9 +50,11 @@ class NewsModel {
       content: json['content'],
       featuredImageUrl: json['featured_image_url'],
       category: json['category'],
-      tags: List<String>.from(json['tags']),
+      tags: json['tags'] != null
+          ? List<String>.from(json['tags'])
+          : [],
       authorName: json['author_name'],
-      publishedAt: DateTime.parse(json['published_at']),
+      publishedAt: DateTime.parse(json['published_at'] ?? '1990-00-00'), // Default date if null
     );
   }
 }

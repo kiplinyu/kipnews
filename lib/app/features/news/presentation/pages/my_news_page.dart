@@ -39,11 +39,12 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
     );
 
     // Jika ada data yang dikembalikan, tambahkan ke daftar
-    if (result != null && result is NewsEntity) {
+    if (result != null && result is bool) {
       final provider = ref.read(newsProvider);
-
-      setState(() async{
-        myNews = await provider.loadMyNews();
+      setState((){
+        Future.microtask(() async {
+          myNews = await provider.loadMyNews();
+        });
       });
     }
   }
@@ -57,9 +58,12 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
     );
 
     // Jika ada data yang dikembalikan, update berita
-    if (result != null && result is NewsEntity) {
-      setState(() {
-        myNews[index] = result;
+    if (result != null && result is bool) {
+      final provider = ref.read(newsProvider);
+      setState(()  {
+        Future.microtask(() async{
+          myNews = await provider.loadMyNews();
+        });
       });
     }
   }

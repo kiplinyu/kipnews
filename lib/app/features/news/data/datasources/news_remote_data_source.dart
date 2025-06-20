@@ -40,17 +40,19 @@ class NewsRemoteDatasource {
     required String imageUrl,
     required bool isEdit
   }) async {
-    final formData = FormData.fromMap({
+    final data = {
       'title': title,
       'summary': summary,
       'content': content,
       'category': category,
-      'image_url': imageUrl,
-    });
+      'featuredImageUrl': imageUrl,
+      'tags': ["Test2","Test"],
+      'isPublished': true,
+    };
 
     final response = isEdit
-        ? await dio.put('/author/news/$id', data: formData)
-        : await dio.post('/author/news', data: formData);
+        ? await dio.put('/author/news/$id', data: data)
+        : await dio.post('/author/news', data: data);
     return response.statusCode == 200;
   }
 }
