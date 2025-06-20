@@ -124,12 +124,23 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ],
                     ),
                   ),
+                  // Ganti bagian CircleAvatar dengan ini:
                   Flexible(
                     flex: 1,
-                    child: const CircleAvatar(
-                      radius: 24,
-                      backgroundImage: NetworkImage(
-                        'https://images.unsplash.com/photo-1657815555962-297100ce4b0e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfilePage(),
+                          ),
+                        );
+                      },
+                      child: const CircleAvatar(
+                        radius: 24,
+                        backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1657815555962-297100ce4b0e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                        ),
                       ),
                     ),
                   ),
@@ -274,17 +285,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           color: Colors.grey[300],
                         ),
                         // Placeholder untuk gambar berita
-                        child: Image.network(
-                          news.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Icon(
-                              PhosphorIcons.image(),
-                              size: 40,
-                              color: Colors.grey,
-                            );
-                          },
-                        ),
+                        child: Icon(PhosphorIcons.image(), color: Colors.grey),
                       ),
                       title: Text(
                         news.title,
