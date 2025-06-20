@@ -14,6 +14,12 @@ class NewsRemoteDatasource {
     return data.map((json) => NewsModel.fromJson(json)).toList();
   }
 
+  Future<List<NewsModel>> fetchMyNews() async {
+    final response = await dio.get('/author/news');
+    final data = response.data['body']['data'] as List;
+    return data.map((json) => NewsModel.fromJson(json)).toList();
+  }
+
   Future<bool> logout() async {
     final prefs = await SharedPreferences.getInstance();
     final result = await prefs.remove('auth_token');
