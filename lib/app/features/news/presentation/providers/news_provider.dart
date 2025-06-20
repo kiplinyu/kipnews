@@ -32,4 +32,9 @@ class NewsProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+  Future<bool> logout() async {
+    final result = await getNews.repository.logout();
+    return result;
+  }
 }
