@@ -14,6 +14,12 @@ class NewsRepositoryImpl implements NewsRepository {
   }
 
   @override
+  Future<List<NewsEntity>> getMyNews() async {
+    final result = await remoteDatasource.fetchMyNews();
+    return result.map((e) => e.toEntity()).toList();
+  }
+
+  @override
   Future<bool> logout() async{
     final result = await remoteDatasource.logout();
     return result;
