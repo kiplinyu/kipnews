@@ -31,6 +31,24 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
   }
 
 
+  void _addNews() async {
+    // Navigasi ke halaman buat berita baru
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreateNews()),
+    );
+
+    // Jika ada data yang dikembalikan, tambahkan ke daftar
+    if (result != null && result is NewsEntity) {
+      final provider = ref.read(newsProvider);
+
+      setState(() async{
+        myNews = await provider.loadMyNews();
+      });
+    }
+  }
+
+
   void _editNews(int index) async {
     // Navigasi ke halaman edit dengan membawa data berita
     final result = await Navigator.push(
@@ -63,7 +81,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
           TextButton(
             onPressed: () {
               setState(() {
-                myNews.removeAt(index);
+                ref.read(newsProvider).delete(myNews[index].id);
               });
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
@@ -83,7 +101,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
+        onPressed: _addNews,
         backgroundColor: AppColors.primary,
         child: Icon(PhosphorIcons.plus(), color: Colors.white),
       ),
