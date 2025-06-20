@@ -1,11 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
 import 'package:kipnews/app/features/news/business/entities/news_entity.dart';
+import 'package:kipnews/app/features/news/presentation/pages/profile_page.dart';
 import 'package:kipnews/app/features/news/presentation/providers/news_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../config/routes/routes.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -76,10 +81,19 @@ class _HomePageState extends ConsumerState<HomePage> {
   // ];
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     // Safe call to load news after widget is initialized
-    Future.microtask(() async => await ref.read(newsProvider).loadNews());
+
+    Future.microtask(() async{
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('auth_token');
+        if (token == null) {
+          context.go(Routes.login);
+          return;
+        }
+      await ref.read(newsProvider).loadNews();
+    });
   }
 
   @override
@@ -285,7 +299,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                           color: Colors.grey[300],
                         ),
                         // Placeholder untuk gambar berita
-                        child: Icon(PhosphorIcons.image(), color: Colors.grey),
+                        child: Image.network(
+                          news.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              PhosphorIcons.image(),
+                              size: 40,
+                              color: Colors.grey,
+                            );
+                          },
+                        ),
                       ),
                       title: Text(
                         news.title,
