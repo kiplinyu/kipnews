@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
-import 'package:kipnews/app/features/news/business/entities/news_entity.dart';
 import 'package:kipnews/app/features/news/presentation/pages/create_news.dart';
 import 'package:kipnews/app/features/news/presentation/providers/news_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -29,7 +28,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
 
   void _addNews() async {
     // Navigasi ke halaman buat berita baru
-    final result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateNews()),
     );
@@ -40,7 +39,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
     // Navigasi ke halaman edit dengan membawa data berita
     final provider = ref.read(newsProvider);
     final myNews = provider.mynews;
-    final result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateNews(news: myNews[index])),
     );
