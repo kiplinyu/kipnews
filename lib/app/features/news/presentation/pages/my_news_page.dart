@@ -20,7 +20,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
   // Data contoh untuk simulasi
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     // Inisialisasi dengan data contoh
     Future.microtask(() async {
@@ -29,7 +29,6 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
       setState(() {});
     });
   }
-
 
   void _addNews() async {
     // Navigasi ke halaman buat berita baru
@@ -41,14 +40,13 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
     // Jika ada data yang dikembalikan, tambahkan ke daftar
     if (result != null && result is bool) {
       final provider = ref.read(newsProvider);
-      setState((){
+      setState(() {
         Future.microtask(() async {
           myNews = await provider.loadMyNews();
         });
       });
     }
   }
-
 
   void _editNews(int index) async {
     // Navigasi ke halaman edit dengan membawa data berita
@@ -60,8 +58,8 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
     // Jika ada data yang dikembalikan, update berita
     if (result != null && result is bool) {
       final provider = ref.read(newsProvider);
-      setState(()  {
-        Future.microtask(() async{
+      setState(() {
+        Future.microtask(() async {
           myNews = await provider.loadMyNews();
         });
       });
@@ -209,37 +207,6 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      ElevatedButton(
-                        // onPressed: _addNews,
-                        onPressed: () {
-                          setState(() {
-                            myNews = List.from(myNews);
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(
-                              color: AppColors.primary,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'Create News',
-                          style: GoogleFonts.exo2(
-                            color: AppColors.textDark,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

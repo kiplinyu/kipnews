@@ -9,7 +9,7 @@ import 'package:kipnews/app/features/auth/presentation/providers/LoginProvider.d
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends ConsumerStatefulWidget  {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
@@ -24,18 +24,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    Future.microtask(() async{
+    Future.microtask(() async {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token');
       if (token != null) {
         context.go(Routes.home);
       }
     });
-
   }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -168,8 +167,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
                           final email = _emailController.text.trim();
                           final password = _passwordController.text.trim();
-                          if (email.isEmpty ||
-                              password.isEmpty) {
+                          if (email.isEmpty || password.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Please fill in all fields.'),
@@ -177,11 +175,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             );
                             return;
                           }
-                          final provider = ref.read(loginProvider); // panggil provider login
+                          final provider = ref.read(
+                            loginProvider,
+                          ); // panggil provider login
                           final result = await provider.login(email, password);
                           if (!result) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Password atau Email Salah!")),
+                              SnackBar(
+                                content: Text("Password atau Email Salah!"),
+                              ),
                             );
                             return;
                           }
