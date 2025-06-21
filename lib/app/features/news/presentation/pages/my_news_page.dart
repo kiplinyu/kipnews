@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
-import 'package:kipnews/app/features/news/business/entities/news_entity.dart';
 import 'package:kipnews/app/features/news/presentation/pages/create_news.dart';
 import 'package:kipnews/app/features/news/presentation/providers/news_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -15,55 +14,35 @@ class MyNewsPage extends ConsumerStatefulWidget {
 }
 
 class _MyNewsPageState extends ConsumerState<MyNewsPage> {
-  List<NewsEntity> myNews = []; // Daftar berita yang dibuat user
-
-  // Data contoh untuk simulasi
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     // Inisialisasi dengan data contoh
     Future.microtask(() async {
       final provider = ref.read(newsProvider);
-      myNews = await provider.loadMyNews();
-      setState(() {});
+      await provider.loadMyNews();
     });
   }
 
+
   void _addNews() async {
     // Navigasi ke halaman buat berita baru
-    final result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateNews()),
     );
-
-    // Jika ada data yang dikembalikan, tambahkan ke daftar
-    if (result != null && result is bool) {
-      final provider = ref.read(newsProvider);
-      setState(() {
-        Future.microtask(() async {
-          myNews = await provider.loadMyNews();
-        });
-      });
-    }
   }
+
 
   void _editNews(int index) async {
     // Navigasi ke halaman edit dengan membawa data berita
-    final result = await Navigator.push(
+    final provider = ref.read(newsProvider);
+    final myNews = provider.mynews;
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateNews(news: myNews[index])),
     );
-
-    // Jika ada data yang dikembalikan, update berita
-    if (result != null && result is bool) {
-      final provider = ref.read(newsProvider);
-      setState(() {
-        Future.microtask(() async {
-          myNews = await provider.loadMyNews();
-        });
-      });
-    }
   }
 
   void _deleteNews(int index) {
@@ -81,10 +60,10 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
             child: Text('Cancel', style: GoogleFonts.exo2()),
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-                ref.read(newsProvider).delete(myNews[index].id);
-              });
+            onPressed: () async {
+              final provider = ref.read(newsProvider);
+              final myNews = provider.mynews;
+              await ref.read(newsProvider).delete(myNews[index].id);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -101,6 +80,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final myNews = ref.watch(newsProvider).mynews; // atau final myNews = ref.watch(newsProvider).myNews;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: _addNews,

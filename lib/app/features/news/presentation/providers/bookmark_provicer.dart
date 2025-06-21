@@ -25,7 +25,6 @@ class BookmarkNotifier extends StateNotifier<List<NewsEntity>> {
   }
 
   Future<void> toggleBookmark(NewsEntity news) async {
-    final prefs = await SharedPreferences.getInstance();
     List<NewsEntity> newBookmarks = [...state];
 
     if (isBookmarked(news)) {

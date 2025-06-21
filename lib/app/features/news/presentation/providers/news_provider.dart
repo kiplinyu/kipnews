@@ -18,9 +18,11 @@ final newsProvider = ChangeNotifierProvider((ref) {
 class NewsProvider extends ChangeNotifier {
   final GetNews getNews;
   List<NewsEntity> _news = [];
+  List<NewsEntity> _mynews = [];
   bool _isLoading = false;
 
   List<NewsEntity> get news => _news;
+  List<NewsEntity> get mynews => _mynews;
   bool get isLoading => _isLoading;
 
   NewsProvider(this.getNews);
@@ -33,22 +35,25 @@ class NewsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<NewsEntity>> loadMyNews() async {
+  Future<void> loadMyNews() async {
     _isLoading = true;
     notifyListeners();
-    final result = await getNews.getMyNews();
+    _mynews = await getNews.getMyNews();
     _isLoading = false;
     notifyListeners();
-    return result;
   }
 
   Future<bool> logout() async {
     final result = await getNews.repository.logout();
+    await loadMyNews();
+    notifyListeners();
     return result;
   }
 
   Future<bool> delete(String id) async {
     final result = await getNews.repository.delete(id);
+    await loadMyNews();
+    notifyListeners();
     return result;
   }
 
@@ -70,6 +75,8 @@ class NewsProvider extends ChangeNotifier {
       imageUrl: imageUrl,
       isEdit: isEdit,
     );
+    await loadMyNews();
+    notifyListeners();
     return result;
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kipnews/app/config/routes/routes.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
 import 'package:kipnews/app/features/news/presentation/pages/news_skeleton.dart';
 import 'package:kipnews/app/features/news/presentation/providers/bookmark_provicer.dart';
@@ -173,7 +171,17 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[300],
                       ),
-                      child: Icon(PhosphorIcons.image(), color: Colors.grey),
+                      child: Image.network(
+                        bookmark.imageUrl ?? 'https://via.placeholder.com/80',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            PhosphorIcons.image(),
+                            size: 40,
+                            color: Colors.grey,
+                          );
+                        },
+                      ),
                     ),
                     title: Text(
                       bookmark.title,
