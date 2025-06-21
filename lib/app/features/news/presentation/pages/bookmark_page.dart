@@ -1,43 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kipnews/app/config/routes/routes.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
+import 'package:kipnews/app/features/news/presentation/pages/news_skeleton.dart';
+import 'package:kipnews/app/features/news/presentation/providers/bookmark_provicer.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:intl/intl.dart';
 
-class BookmarkPage extends StatefulWidget {
+class BookmarkPage extends ConsumerStatefulWidget {
   const BookmarkPage({super.key});
 
   @override
-  State<BookmarkPage> createState() => _BookmarkPageState();
+  ConsumerState<BookmarkPage> createState() => _BookmarkPageState();
 }
 
-class _BookmarkPageState extends State<BookmarkPage> {
-  List<Map<String, dynamic>> bookmarks = []; // Daftar bookmark
-
-  // Data contoh untuk bookmark
-  final List<Map<String, dynamic>> sampleBookmarks = [
-    {
-      'title':
-          'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
-      'author': 'Alisa Mikhailovna Kujou',
-      'date': '24 Jan 2025',
-      'category': 'Tech',
-    },
-    {
-      'title': 'Emas Melejit 7% Sepanjang April, Analis Prediksi Masih Naik',
-      'author': 'Shouko Komi',
-      'date': '1 Apr 2025',
-      'category': 'Finance',
-    },
-    {
-      'title': 'Film Indie ‘Malam di Puncak’',
-      'author': 'Emilia',
-      'date': '1 Apr 2025',
-      'category': 'Entertainment',
-    },
-  ];
+class _BookmarkPageState extends ConsumerState<BookmarkPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Muat bookmark saat inisialisasi
+    Future.microtask(() {
+      ref.read(bookmarkProvider.notifier).loadBookmarks();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bookmarks = ref.watch(bookmarkProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -45,12 +37,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
         children: [
           const SizedBox(height: 20),
           Row(
-            spacing: 12,
             children: [
               SizedBox(
                 width: 24,
                 child: Image.asset('assets/images/kipnewslogo-only.png'),
               ),
+              const SizedBox(width: 12),
               Text(
                 'Bookmarks',
                 style: GoogleFonts.exo2(
@@ -131,10 +123,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     const SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
-                        // Simulasikan penambahan bookmark
-                        setState(() {
-                          bookmarks = List.from(sampleBookmarks);
-                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewsSkeleton(),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -145,10 +139,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(
-                            color: const Color(0xFFFF944D),
-                            width: 2,
-                          ),
+                          side: BorderSide(color: AppColors.primary, width: 2),
                         ),
                       ),
                       child: Text(
@@ -185,7 +176,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       child: Icon(PhosphorIcons.image(), color: Colors.grey),
                     ),
                     title: Text(
-                      bookmark['title'],
+                      bookmark.title,
                       style: GoogleFonts.exo2(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
@@ -193,13 +184,17 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       children: [
                         const SizedBox(height: 4),
                         Text(
-                          bookmark['author'],
+                          bookmark.authorId ?? "Unknown Author",
                           style: GoogleFonts.exo2(fontSize: 12),
                         ),
                         Row(
                           children: [
                             Text(
-                              bookmark['date'],
+                              bookmark.publishedAt != null
+                                  ? DateFormat(
+                                      'dd MMM yyyy',
+                                    ).format(bookmark.publishedAt!)
+                                  : "Unknown Date",
                               style: GoogleFonts.exo2(
                                 fontSize: 12,
                                 color: Colors.grey,
@@ -207,7 +202,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              bookmark['category'],
+                              bookmark.category,
                               style: GoogleFonts.exo2(
                                 fontSize: 12,
                                 color: AppColors.primary,
@@ -219,14 +214,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     ),
                     trailing: IconButton(
                       icon: Icon(
-                        PhosphorIcons.bookmark(PhosphorIconsStyle.fill),
+                        PhosphorIcons.bookmarkSimple(PhosphorIconsStyle.fill),
                         color: AppColors.primary,
                       ),
                       onPressed: () {
-                        // Hapus bookmark
-                        setState(() {
-                          bookmarks.removeAt(index);
-                        });
+                        ref
+                            .read(bookmarkProvider.notifier)
+                            .toggleBookmark(bookmark);
                       },
                     ),
                   );

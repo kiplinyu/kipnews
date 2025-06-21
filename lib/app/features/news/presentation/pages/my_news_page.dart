@@ -186,6 +186,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
                           color: AppColors.placeholder,
                         ),
                       ),
+                      const SizedBox(height: 30),
                     ],
                   ),
                 ),

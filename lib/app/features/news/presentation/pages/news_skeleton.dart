@@ -57,7 +57,7 @@ class _NewsSkeletonState extends State<NewsSkeleton> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  PhosphorIcons.bookmark(
+                  PhosphorIcons.bookmarkSimple(
                     _currentIndex == 1
                         ? PhosphorIconsStyle.fill
                         : PhosphorIconsStyle.regular,

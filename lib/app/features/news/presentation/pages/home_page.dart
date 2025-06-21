@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kipnews/app/core/constants/constants.dart';
 import 'package:kipnews/app/features/news/business/entities/news_entity.dart';
+import 'package:kipnews/app/features/news/presentation/pages/detail_page.dart';
 import 'package:kipnews/app/features/news/presentation/pages/profile_page.dart';
 import 'package:kipnews/app/features/news/presentation/providers/news_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -20,78 +21,18 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  final List<NewsEntity> carouselItems = [
-    NewsEntity(
-      id: '1',
-      title: 'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
-      authorId: 'Alisa Mikhailovna Kujou',
-      publishedAt: DateTime.parse('2025-01-24T10:00:00Z'),
-      category: 'Tech',
-      slug: 'startup-lokal-chatbot-kripto',
-      summary: 'Chatbot ini menggunakan AI untuk menganalisis sentimen di Twitter terkait kripto.',
-      content: 'Chatbot ini menggunakan AI untuk menganalisis sentimen di Twitter terkait kripto. Dengan teknologi ini, pengguna dapat mendapatkan informasi terkini dan analisis pasar kripto secara real-time.',
-      featuredImageUrl: 'https://example.com/image1.jpg',
-      tags: ['AI', 'Crypto', 'Chatbot'],
-      isPublished: true,
-      viewCount: 1500,
-      imageUrl: 'https://example.com/image1.jpg',
-    ),
-  ];
-
-
-  // final List<Map<String, dynamic>> newsItems = [
-  //   {
-  //     'title':
-  //         'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
-  //     'author': 'Alisa Mikhailovna Kujou',
-  //     'date': '24 Jan 2025',
-  //     'category': 'Tech',
-  //   },
-  //   {
-  //     'title': 'Emas Melejit 7% Sepanjang April, Analis Prediksi Masih Naik',
-  //     'author': 'Shouko Komi',
-  //     'date': '1 Apr 2025',
-  //     'category': 'Finance',
-  //   },
-  //   {
-  //     'title': 'Film Indie ‘Malam di Puncak’',
-  //     'author': 'Emilia',
-  //     'date': '1 Apr 2025',
-  //     'category': 'Entertainment',
-  //   },
-  //   {
-  //     'title':
-  //         'Startup Lokal Rilis Chatbot Kripto Pintar yang Bisa Baca Sentimen Twitter',
-  //     'author': 'Alisa Mikhailovna Kujou',
-  //     'date': '24 Jan 2025',
-  //     'category': 'Tech',
-  //   },
-  //   {
-  //     'title': 'Emas Melejit 7% Sepanjang April, Analis Prediksi Masih Naik',
-  //     'author': 'Shouko Komi',
-  //     'date': '1 Apr 2025',
-  //     'category': 'Finance',
-  //   },
-  //   {
-  //     'title': 'Film Indie ‘Malam di Puncak’',
-  //     'author': 'Emilia',
-  //     'date': '1 Apr 2025',
-  //     'category': 'Entertainment',
-  //   },
-  // ];
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
     // Safe call to load news after widget is initialized
 
-    Future.microtask(() async{
-        final prefs = await SharedPreferences.getInstance();
-        final token = prefs.getString('auth_token');
-        if (token == null) {
-          context.go(Routes.login);
-          return;
-        }
+    Future.microtask(() async {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      if (token == null) {
+        context.go(Routes.login);
+        return;
+      }
       await ref.read(newsProvider).loadNews();
     });
   }
@@ -100,6 +41,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     final NewsProvider provider = ref.watch(newsProvider);
     final List<NewsEntity> newsItems = provider.news;
+    final carouselItems = newsItems.take(5).toList();
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -191,90 +133,107 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SizedBox(height: 12),
 
               // Carousel
-              CarouselSlider(
-                options: CarouselOptions(
-                  height: 200,
-                  viewportFraction: 0.85,
-                  enlargeCenterPage: false,
-                  autoPlay: false,
-                  enableInfiniteScroll: true,
-                  padEnds: false,
-                ),
-                items: carouselItems.map((item) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailPage(newsItem: item),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                          //TODO: color to IMAGE
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 6,
-                              color: AppColors.placeholder,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              item.category,
-                              style: GoogleFonts.exo2(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              item.category,
-                              style: GoogleFonts.exo2(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Text(
-                                  item.authorId ?? "Unknown Author",
-                                  style: GoogleFonts.exo2(
-                                    fontSize: 12,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  item.publishedAt?.toLocal().toString().split('T')[0] ?? "Unknown Date",
-                                  style: GoogleFonts.exo2(
-                                    fontSize: 12,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+              carouselItems.isNotEmpty
+                  ? CarouselSlider(
+                      options: CarouselOptions(
+                        height: 200,
+                        viewportFraction: 0.85,
+                        enlargeCenterPage: false,
+                        autoPlay: false,
+                        enableInfiniteScroll: true,
+                        padEnds: false,
                       ),
+                      items: carouselItems.map((item) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailPage(newsItem: item),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    item.featuredImageUrl ??
+                                        item.imageUrl ??
+                                        'https://via.placeholder.com/400x200?text=No+Image',
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 6,
+                                    color: AppColors.placeholder,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    item.category,
+                                    style: GoogleFonts.exo2(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    item.title, // Tampilkan judul berita
+                                    style: GoogleFonts.exo2(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        item.authorId ?? "Unknown Author",
+                                        style: GoogleFonts.exo2(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        item.publishedAt
+                                                ?.toLocal()
+                                                .toString()
+                                                .split('T')[0] ??
+                                            "Unknown Date",
+                                        style: GoogleFonts.exo2(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    )
+                  : const SizedBox(
+                      height: 200,
+                      child: Center(child: CircularProgressIndicator()),
                     ),
-                  );
-                }).toList(),
-              ),
 
               // Latest News Section
               SizedBox(height: 8),
@@ -326,7 +285,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Row(
                             children: [
                               Text(
-                                news.publishedAt?.toLocal().toString().split('T')[0] ?? "Unknown Date",
+                                news.publishedAt?.toLocal().toString().split(
+                                      'T',
+                                    )[0] ??
+                                    "Unknown Date",
                                 style: GoogleFonts.exo2(
                                   fontSize: 12,
                                   color: Colors.grey,
@@ -360,24 +322,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// Halaman detail (placeholder)
-class DetailPage extends StatelessWidget {
-  final NewsEntity newsItem;
-
-  const DetailPage({super.key, required this.newsItem});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(newsItem.title)),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(newsItem.authorId ?? 'No Author'),
       ),
     );
   }
