@@ -15,9 +15,6 @@ class MyNewsPage extends ConsumerStatefulWidget {
 }
 
 class _MyNewsPageState extends ConsumerState<MyNewsPage> {
-  List<NewsEntity> myNews = []; // Daftar berita yang dibuat user
-
-  // Data contoh untuk simulasi
 
   @override
   void initState(){
@@ -25,8 +22,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
     // Inisialisasi dengan data contoh
     Future.microtask(() async {
       final provider = ref.read(newsProvider);
-      myNews = await provider.loadMyNews();
-      setState(() {});
+      await provider.loadMyNews();
     });
   }
 
@@ -37,35 +33,17 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
       context,
       MaterialPageRoute(builder: (context) => CreateNews()),
     );
-
-    // Jika ada data yang dikembalikan, tambahkan ke daftar
-    if (result != null && result is bool) {
-      final provider = ref.read(newsProvider);
-      setState((){
-        Future.microtask(() async {
-          myNews = await provider.loadMyNews();
-        });
-      });
-    }
   }
 
 
   void _editNews(int index) async {
     // Navigasi ke halaman edit dengan membawa data berita
+    final provider = ref.read(newsProvider);
+    final myNews = provider.mynews;
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateNews(news: myNews[index])),
     );
-
-    // Jika ada data yang dikembalikan, update berita
-    if (result != null && result is bool) {
-      final provider = ref.read(newsProvider);
-      setState(()  {
-        Future.microtask(() async{
-          myNews = await provider.loadMyNews();
-        });
-      });
-    }
   }
 
   void _deleteNews(int index) {
@@ -83,10 +61,10 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
             child: Text('Cancel', style: GoogleFonts.exo2()),
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-                ref.read(newsProvider).delete(myNews[index].id);
-              });
+            onPressed: () async {
+              final provider = ref.read(newsProvider);
+              final myNews = provider.mynews;
+              await ref.read(newsProvider).delete(myNews[index].id);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -103,6 +81,7 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final myNews = ref.watch(newsProvider).mynews; // atau final myNews = ref.watch(newsProvider).myNews;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: _addNews,
@@ -206,38 +185,6 @@ class _MyNewsPageState extends ConsumerState<MyNewsPage> {
                         style: GoogleFonts.exo2(
                           fontSize: 16,
                           color: AppColors.placeholder,
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      ElevatedButton(
-                        // onPressed: _addNews,
-                        onPressed: () {
-                          setState(() {
-                            myNews = List.from(myNews);
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(
-                              color: AppColors.primary,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'Create News',
-                          style: GoogleFonts.exo2(
-                            color: AppColors.textDark,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
                         ),
                       ),
                     ],
